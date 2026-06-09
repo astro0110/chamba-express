@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import { Search, SlidersHorizontal, Star, X, ChevronDown, MapPin } from 'lucide-react'
+import { useState, useMemo, useRef } from 'react'
+import { Search, SlidersHorizontal, Star, X, ChevronDown, MapPin, Rocket } from 'lucide-react'
 import ProCard from '@/components/pro-card'
 import { PROFESSIONALS, CATEGORIES } from '@/lib/mock-data'
 
@@ -63,6 +63,29 @@ export default function SearchPage({ initialQuery = '', onSelectPro }: Props) {
       case 'reviews':
         result = [...result].sort((a, b) => b.reviews - a.reviews)
         break
+    }
+
+    // Boost: insert boosted pros at random positions near the top (equitative)
+    const boosted = result.filter((p) => p.boosted)
+    const normal = result.filter((p) => !p.boosted)
+    if (boosted.length > 0) {
+      // Shuffle boosted among themselves
+      const shuffledBoosted = [...boosted].sort(() => Math.random() - 0.5)
+      // Place them in the first N positions, distributed among normal results
+      const combined: typeof result = []
+      let bi = 0
+      let ni = 0
+      for (let i = 0; i < result.length; i++) {
+        // Insert a boosted every ~3 positions while there are boosted left
+        if (bi < shuffledBoosted.length && (ni === 0 || ni % 3 === 0)) {
+          combined.push(shuffledBoosted[bi++])
+        } else if (ni < normal.length) {
+          combined.push(normal[ni++])
+        } else if (bi < shuffledBoosted.length) {
+          combined.push(shuffledBoosted[bi++])
+        }
+      }
+      return combined
     }
 
     return result

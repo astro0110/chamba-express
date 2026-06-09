@@ -14,6 +14,7 @@ export default function Page() {
   const [page, setPage] = useState<Page>('home')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedPro, setSelectedPro] = useState<string | null>(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   const navigate = (next: string) => {
     setPage(next as Page)
@@ -32,25 +33,47 @@ export default function Page() {
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
   }
 
-  // Pages with their own full-screen chrome (no public navbar)
+  const handleAuth = () => {
+    setIsLoggedIn(true)
+    navigate('dashboard')
+  }
+
+  const handleLogout = () => {
+    setIsLoggedIn(false)
+    navigate('home')
+  }
+
+  // Auth pages — full screen, no navbar
   if (page === 'login' || page === 'register') {
     return (
       <AuthPage
         mode={page}
         onNavigate={navigate}
-        onAuth={() => navigate('dashboard')}
+        onAuth={handleAuth}
       />
     )
   }
 
+  // Dashboard — has its own sidebar nav
   if (page === 'dashboard') {
-    return <DashboardPage onNavigate={navigate} />
+    return (
+      <DashboardPage
+        onNavigate={navigate}
+        onLogout={handleLogout}
+        onSearch={handleSelectPro}
+      />
+    )
   }
 
-  // Public pages share the navbar
+  // Public + authenticated shared pages (landing, search, profile)
   return (
     <>
-      <Navbar currentPage={page} onNavigate={navigate} />
+      <Navbar
+        currentPage={page}
+        onNavigate={navigate}
+        isLoggedIn={isLoggedIn}
+        onLogout={handleLogout}
+      />
 
       {page === 'home' && (
         <LandingPage
@@ -72,6 +95,7 @@ export default function Page() {
             proId={selectedPro ?? '1'}
             onBack={() => navigate('search')}
             onNavigate={navigate}
+            isLoggedIn={isLoggedIn}
           />
         </div>
       )}

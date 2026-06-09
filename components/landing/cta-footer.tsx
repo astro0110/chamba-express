@@ -1,6 +1,6 @@
 'use client'
 
-import { Zap, Mail, Instagram, Twitter, Linkedin } from 'lucide-react'
+import { Zap, Mail, Globe, Send, AtSign } from 'lucide-react'
 
 type Props = { onNavigate: (page: string) => void }
 
@@ -49,7 +49,7 @@ export default function CtaFooter({ onNavigate }: Props) {
                 Conectando profesionales con clientes en toda Argentina.
               </p>
               <div className="flex items-center gap-3 mt-4">
-                {[Instagram, Twitter, Linkedin].map((Icon, i) => (
+                {[Globe, Send, AtSign].map((Icon, i) => (
                   <button
                     key={i}
                     className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center hover:bg-[var(--turquoise)] transition-colors"

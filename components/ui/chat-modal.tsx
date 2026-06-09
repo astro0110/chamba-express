@@ -13,8 +13,7 @@ export type ChatMessage = {
 
 type Props = {
   open: boolean
-  contactName: string
-  contactAvatar: string
+  contact: { id: string; name: string; avatar: string }
   initialMessages?: ChatMessage[]
   onClose: () => void
 }
@@ -29,7 +28,9 @@ const AUTO_REPLIES = [
   'Entendido. Te mando el presupuesto enseguida.',
 ]
 
-export default function ChatModal({ open, contactName, contactAvatar, initialMessages = [], onClose }: Props) {
+export default function ChatModal({ open, contact, initialMessages = [], onClose }: Props) {
+  const contactName = contact.name
+  const contactAvatar = contact.avatar
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages)
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)

@@ -170,6 +170,7 @@ export const PROFESSIONALS: Professional[] = [
       'https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?w=600&q=80',
     ],
     joinedYear: 2021,
+    completedJobs: 67,
   },
   {
     id: '5',
@@ -213,6 +214,7 @@ export const PROFESSIONALS: Professional[] = [
       'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=600&q=80',
     ],
     joinedYear: 2021,
+    completedJobs: 53,
   },
 ]
 

@@ -226,12 +226,13 @@ export default function DashboardPage({ onNavigate, onLogout, onSearch }: Props)
   const unreadMessages = MOCK_MESSAGES.filter((m) => m.unread).length
   const unreadNotifs = notifications.filter((n) => !n.read).length
 
-  const NAV = [
+  type NavItem = { id: string; label: string; icon: React.ComponentType<{ className?: string }>; badge?: number }
+  const NAV: NavItem[] = [
     { id: 'overview', label: 'Resumen', icon: LayoutDashboard },
     { id: 'profiles', label: 'Mis perfiles', icon: Briefcase },
     { id: 'messages', label: 'Mensajes', icon: MessageCircle, badge: unreadMessages },
     { id: 'settings', label: 'Configuración', icon: Settings },
-  ] as const
+  ]
 
   const Sidebar = () => (
     <aside className="flex flex-col h-full">
@@ -674,7 +675,7 @@ export default function DashboardPage({ onNavigate, onLogout, onSearch }: Props)
                   {[
                     { label: 'Nombre completo', value: MOCK_USER.name, type: 'text' },
                     { label: 'Correo electrónico', value: MOCK_USER.email, type: 'email' },
-                    { label: 'Teléfono', value: '+54 11 1234-5678', type: 'tel' },
+                    { label: 'Tel��fono', value: '+54 11 1234-5678', type: 'tel' },
                     { label: 'Ciudad', value: 'Buenos Aires, Argentina', type: 'text' },
                   ].map(({ label, value, type }) => (
                     <div key={label}>
@@ -930,8 +931,7 @@ export default function DashboardPage({ onNavigate, onLogout, onSearch }: Props)
       {activeChatMsg && (
         <ChatModal
           open={chatOpen}
-          contactName={activeChatMsg.from}
-          contactAvatar={activeChatMsg.avatar}
+          contact={{ id: activeChatMsg.id, name: activeChatMsg.from, avatar: activeChatMsg.avatar }}
           initialMessages={CHAT_HISTORIES[activeChatMsg.id] ?? []}
           onClose={() => setChatOpen(false)}
         />

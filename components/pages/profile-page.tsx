@@ -429,6 +429,13 @@ export default function ProfilePage({ proId, onBack, onNavigate, isLoggedIn = fa
           </div>
         </div>
       </div>
+
+      {/* Chat modal (logged-in users) */}
+      <ChatModal
+        open={chatOpen}
+        onClose={() => setChatOpen(false)}
+        contact={{ id: pro.id, name: pro.name, avatar: pro.avatar }}
+      />
     </div>
   )
 }

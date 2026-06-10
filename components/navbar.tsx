@@ -1,25 +1,18 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Menu, X, Zap, LayoutDashboard, LogOut, Search, MessageCircle, ChevronDown } from 'lucide-react'
-
-const MOCK_USER = {
-  name: 'María González',
-  avatar: 'https://i.pravatar.cc/150?img=47',
-}
+import { Menu, X, Zap, LayoutDashboard, LogOut, Search, Award, ChevronDown } from 'lucide-react'
 
 type NavbarProps = {
   currentPage?: string
   onNavigate?: (page: string) => void
   isLoggedIn?: boolean
-  onLogout?: () => void
 }
 
 export default function Navbar({
   currentPage = 'home',
   onNavigate,
   isLoggedIn = false,
-  onLogout,
 }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -32,7 +25,6 @@ export default function Navbar({
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Close avatar dropdown when clicking outside
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (avatarRef.current && !avatarRef.current.contains(e.target as Node)) {
@@ -53,7 +45,6 @@ export default function Navbar({
     setMenuOpen(false)
     if (currentPage !== 'home') {
       onNavigate?.('home')
-      // Wait for home page to mount before scrolling
       setTimeout(() => {
         document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })
       }, 120)
@@ -65,7 +56,7 @@ export default function Navbar({
   const handleLogout = () => {
     setAvatarOpen(false)
     setMenuOpen(false)
-    onLogout?.()
+    nav('home')
   }
 
   return (
@@ -108,6 +99,15 @@ export default function Navbar({
               Explorar
             </button>
             <button
+              onClick={() => nav('top-workers')}
+              className={`text-sm font-medium transition-colors hover:text-[var(--turquoise)] flex items-center gap-1 ${
+                currentPage === 'top-workers' ? 'text-[var(--turquoise)]' : 'text-muted-foreground'
+              }`}
+            >
+              <Award className="w-4 h-4" />
+              Mejores Trabajadores
+            </button>
+            <button
               onClick={handleHowItWorks}
               className="text-sm font-medium text-muted-foreground transition-colors hover:text-[var(--turquoise)]"
             >
@@ -123,14 +123,10 @@ export default function Navbar({
                   onClick={() => setAvatarOpen(!avatarOpen)}
                   className="flex items-center gap-2 px-2 py-1.5 rounded-full border border-border hover:border-[var(--turquoise)] transition-all"
                 >
-                  <img
-                    src={MOCK_USER.avatar}
-                    alt={MOCK_USER.name}
-                    className="w-7 h-7 rounded-full object-cover"
-                  />
-                  <span className="text-sm font-medium text-foreground">
-                    {MOCK_USER.name.split(' ')[0]}
-                  </span>
+                  <div className="w-7 h-7 rounded-full bg-[var(--turquoise)] flex items-center justify-center text-white text-xs font-bold">
+                    U
+                  </div>
+                  <span className="text-sm font-medium text-foreground">Usuario</span>
                   <ChevronDown
                     className={`w-3.5 h-3.5 text-muted-foreground transition-transform ${avatarOpen ? 'rotate-180' : ''}`}
                   />
@@ -139,22 +135,16 @@ export default function Navbar({
                 {avatarOpen && (
                   <div className="absolute right-0 top-full mt-2 w-52 bg-card border border-border rounded-2xl shadow-xl py-2 animate-fade-in z-50">
                     <div className="px-4 py-2 border-b border-border mb-1">
-                      <p className="text-xs font-semibold text-foreground">{MOCK_USER.name}</p>
+                      <p className="text-xs font-semibold text-foreground">Mi Cuenta</p>
                     </div>
                     {[
                       { icon: LayoutDashboard, label: 'Mi panel', page: 'dashboard' },
                       { icon: Search, label: 'Explorar profesionales', page: 'search' },
-                      { icon: MessageCircle, label: 'Mis mensajes', page: 'messages' },
+                      { icon: Award, label: 'Mejores Trabajadores', page: 'top-workers' },
                     ].map(({ icon: Icon, label, page }) => (
                       <button
                         key={page}
-                        onClick={() => {
-                          if (page === 'messages') {
-                            nav('dashboard')
-                          } else {
-                            nav(page)
-                          }
-                        }}
+                        onClick={() => nav(page)}
                         className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                       >
                         <Icon className="w-4 h-4" /> {label}
@@ -207,13 +197,15 @@ export default function Navbar({
             {[
               { label: 'Inicio', action: () => nav('home') },
               { label: 'Explorar', action: () => nav('search') },
+              { label: 'Mejores Trabajadores', action: () => nav('top-workers'), icon: Award },
               { label: 'Cómo funciona', action: handleHowItWorks },
-            ].map(({ label, action }) => (
+            ].map(({ label, action, icon: Icon }) => (
               <button
                 key={label}
                 onClick={action}
-                className="text-left text-sm font-medium text-foreground py-2.5 px-2 rounded-xl hover:bg-muted transition-colors"
+                className="text-left text-sm font-medium text-foreground py-2.5 px-2 rounded-xl hover:bg-muted transition-colors flex items-center gap-2"
               >
+                {Icon && <Icon className="w-4 h-4" />}
                 {label}
               </button>
             ))}
@@ -222,8 +214,10 @@ export default function Navbar({
               {isLoggedIn ? (
                 <>
                   <div className="flex items-center gap-3 px-2 py-2">
-                    <img src={MOCK_USER.avatar} alt={MOCK_USER.name} className="w-8 h-8 rounded-full object-cover" />
-                    <p className="text-sm font-semibold text-foreground">{MOCK_USER.name}</p>
+                    <div className="w-8 h-8 rounded-full bg-[var(--turquoise)] flex items-center justify-center text-white text-xs font-bold">
+                      U
+                    </div>
+                    <p className="text-sm font-semibold text-foreground">Usuario</p>
                   </div>
                   <button
                     onClick={() => nav('dashboard')}

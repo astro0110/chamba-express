@@ -24,6 +24,7 @@ export type Professional = {
   portfolio: string[]
   joinedYear: number
   completedJobs: number
+  boosted?: boolean
 }
 
 export type Review = {
@@ -60,6 +61,7 @@ export type UserProfile = {
   contacts: number
   rating: number
   location: string
+  boosted?: boolean
 }
 
 export const CATEGORIES: Category[] = [
@@ -92,7 +94,13 @@ export const PROFESSIONALS: Professional[] = [
     verified: true,
     available: true,
     tags: ['Niños', 'Educación', 'Cuidado infantil'],
-    portfolio: [],
+    boosted: true,
+    portfolio: [
+      'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&q=80',
+      'https://images.unsplash.com/photo-1596464716127-f2a82984de30?w=600&q=80',
+      'https://images.unsplash.com/photo-1544776193-352d25ca82cd?w=600&q=80',
+      'https://images.unsplash.com/photo-1471286174890-9c112ac6476d?w=600&q=80',
+    ],
     joinedYear: 2019,
     completedJobs: 134,
   },
@@ -110,7 +118,11 @@ export const PROFESSIONALS: Professional[] = [
     verified: true,
     available: true,
     tags: ['Urgencias', 'Certificado', 'Instalaciones'],
-    portfolio: [],
+    portfolio: [
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
+      'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&q=80',
+      'https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?w=600&q=80',
+    ],
     joinedYear: 2020,
     completedJobs: 98,
   },
@@ -128,7 +140,11 @@ export const PROFESSIONALS: Professional[] = [
     verified: true,
     available: false,
     tags: ['Idiomas', 'Yoga', 'Online'],
-    portfolio: [],
+    portfolio: [
+      'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80',
+      'https://images.unsplash.com/photo-1545389336-cf090694435e?w=600&q=80',
+      'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&q=80',
+    ],
     joinedYear: 2018,
     completedJobs: 211,
   },
@@ -146,7 +162,13 @@ export const PROFESSIONALS: Professional[] = [
     verified: false,
     available: true,
     tags: ['Artesanal', 'Instrumentos', 'Muebles'],
-    portfolio: [],
+    boosted: true,
+    portfolio: [
+      'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=600&q=80',
+      'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80',
+      'https://images.unsplash.com/photo-1490427712608-588d03c78e83?w=600&q=80',
+      'https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?w=600&q=80',
+    ],
     joinedYear: 2021,
     completedJobs: 67,
   },
@@ -164,7 +186,11 @@ export const PROFESSIONALS: Professional[] = [
     verified: true,
     available: true,
     tags: ['Saludable', 'Limpieza', 'Catering'],
-    portfolio: [],
+    portfolio: [
+      'https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=600&q=80',
+      'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80',
+      'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&q=80',
+    ],
     joinedYear: 2022,
     completedJobs: 45,
   },
@@ -182,7 +208,11 @@ export const PROFESSIONALS: Professional[] = [
     verified: true,
     available: true,
     tags: ['Exterior', 'Diseño', 'Pintura'],
-    portfolio: [],
+    portfolio: [
+      'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=80',
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
+      'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=600&q=80',
+    ],
     joinedYear: 2021,
     completedJobs: 53,
   },

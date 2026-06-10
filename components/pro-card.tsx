@@ -1,6 +1,6 @@
 'use client'
 
-import { Star, MapPin, CheckCircle, Clock } from 'lucide-react'
+import { Star, MapPin, CheckCircle, Rocket } from 'lucide-react'
 import type { Professional } from '@/lib/mock-data'
 
 type Props = {
@@ -12,10 +12,20 @@ export default function ProCard({ pro, onClick }: Props) {
   return (
     <button
       onClick={onClick}
-      className="group w-full text-left bg-card border border-border rounded-3xl overflow-hidden card-hover transition-all"
+      className={`group w-full text-left bg-card border rounded-3xl overflow-hidden card-hover transition-all ${
+        pro.boosted ? 'border-[var(--amber-brand)]/40 ring-1 ring-[var(--amber-brand)]/20' : 'border-border'
+      }`}
     >
+      {/* Boost badge */}
+      {pro.boosted && (
+        <div className="flex items-center gap-1.5 px-5 pt-3 pb-0">
+          <div className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[var(--amber-brand)]/15 text-[var(--amber-brand)]">
+            <Rocket className="w-3 h-3" /> Destacado
+          </div>
+        </div>
+      )}
       {/* Header */}
-      <div className="p-5 pb-0">
+      <div className={`p-5 ${pro.boosted ? 'pt-3' : 'pb-0'}`}>
         <div className="flex items-start gap-4">
           <div className="relative shrink-0">
             <img

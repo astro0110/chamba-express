@@ -14,13 +14,19 @@ import {
   Heart,
   Share2,
   Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Images,
 } from 'lucide-react'
 import { PROFESSIONALS, REVIEWS, CATEGORIES } from '@/lib/mock-data'
+import ChatModal from '@/components/ui/chat-modal'
+import { useToast } from '@/components/ui/toast'
 
 type Props = {
   proId: string
   onBack: () => void
   onNavigate: (page: string) => void
+  isLoggedIn?: boolean
 }
 
 const DAYS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
@@ -34,12 +40,15 @@ const HOURS: Record<string, boolean[]> = {
   Dom: [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
 }
 
-export default function ProfilePage({ proId, onBack, onNavigate }: Props) {
+export default function ProfilePage({ proId, onBack, onNavigate, isLoggedIn = false }: Props) {
   const pro = PROFESSIONALS.find((p) => p.id === proId) ?? PROFESSIONALS[0]
+  const { toast } = useToast()
   const [saved, setSaved] = useState(false)
   const [showContact, setShowContact] = useState(false)
+  const [chatOpen, setChatOpen] = useState(false)
   const [message, setMessage] = useState('')
-  const [activeTab, setActiveTab] = useState<'overview' | 'reviews' | 'schedule'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'portfolio' | 'reviews' | 'schedule'>('overview')
+  const [sliderIndex, setSliderIndex] = useState(0)
 
   const catData = CATEGORIES.find((c) => c.name === pro.categories[0])
 
@@ -158,7 +167,7 @@ export default function ProfilePage({ proId, onBack, onNavigate }: Props) {
 
             {/* Tabs */}
             <div className="flex bg-card border border-border rounded-2xl p-1 gap-1">
-              {(['overview', 'reviews', 'schedule'] as const).map((t) => (
+              {(['overview', 'portfolio', 'reviews', 'schedule'] as const).map((t) => (
                 <button
                   key={t}
                   onClick={() => setActiveTab(t)}
@@ -168,7 +177,7 @@ export default function ProfilePage({ proId, onBack, onNavigate }: Props) {
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
-                  {t === 'overview' ? 'Descripción' : t === 'reviews' ? 'Reseñas' : 'Horarios'}
+                  {t === 'overview' ? 'Descripción' : t === 'portfolio' ? 'Portafolio' : t === 'reviews' ? 'Reseñas' : 'Horarios'}
                 </button>
               ))}
             </div>
@@ -195,6 +204,81 @@ export default function ProfilePage({ proId, onBack, onNavigate }: Props) {
                     ))}
                   </div>
                 </div>
+              </div>
+            )}
+
+            {activeTab === 'portfolio' && (
+              <div className="bg-card border border-border rounded-3xl overflow-hidden">
+                {pro.portfolio.length > 0 ? (
+                  <>
+                    {/* Main slide */}
+                    <div className="relative aspect-video bg-muted overflow-hidden">
+                      <img
+                        key={sliderIndex}
+                        src={pro.portfolio[sliderIndex]}
+                        alt={`Trabajo ${sliderIndex + 1}`}
+                        className="w-full h-full object-cover animate-fade-in"
+                        crossOrigin="anonymous"
+                      />
+
+                      {/* Navigation arrows */}
+                      {pro.portfolio.length > 1 && (
+                        <>
+                          <button
+                            onClick={() => setSliderIndex((i) => (i - 1 + pro.portfolio.length) % pro.portfolio.length)}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-foreground/40 hover:bg-foreground/60 backdrop-blur-sm text-white flex items-center justify-center transition-all"
+                            aria-label="Foto anterior"
+                          >
+                            <ChevronLeft className="w-5 h-5" />
+                          </button>
+                          <button
+                            onClick={() => setSliderIndex((i) => (i + 1) % pro.portfolio.length)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-foreground/40 hover:bg-foreground/60 backdrop-blur-sm text-white flex items-center justify-center transition-all"
+                            aria-label="Foto siguiente"
+                          >
+                            <ChevronRight className="w-5 h-5" />
+                          </button>
+                        </>
+                      )}
+
+                      {/* Index badge */}
+                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-foreground/50 backdrop-blur-sm text-white text-xs font-medium">
+                        {sliderIndex + 1} / {pro.portfolio.length}
+                      </div>
+                    </div>
+
+                    {/* Thumbnails */}
+                    {pro.portfolio.length > 1 && (
+                      <div className="flex gap-2 p-4 overflow-x-auto scrollbar-hide">
+                        {pro.portfolio.map((img, i) => (
+                          <button
+                            key={i}
+                            onClick={() => setSliderIndex(i)}
+                            className={`shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-all ${
+                              i === sliderIndex
+                                ? 'border-[var(--turquoise)] opacity-100'
+                                : 'border-transparent opacity-60 hover:opacity-90'
+                            }`}
+                          >
+                            <img
+                              src={img}
+                              alt={`Miniatura ${i + 1}`}
+                              className="w-full h-full object-cover"
+                              crossOrigin="anonymous"
+                            />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-16 text-center gap-3">
+                    <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center">
+                      <Images className="w-6 h-6 text-muted-foreground" />
+                    </div>
+                    <p className="text-sm text-muted-foreground">Sin fotos de trabajos aún.</p>
+                  </div>
+                )}
               </div>
             )}
 
@@ -290,14 +374,14 @@ export default function ProfilePage({ proId, onBack, onNavigate }: Props) {
               <p className="text-xs text-muted-foreground mb-5">Precio orientativo. Puede variar según el servicio.</p>
 
               <button
-                onClick={() => setShowContact(true)}
+                onClick={() => isLoggedIn ? setChatOpen(true) : setShowContact(true)}
                 className="w-full py-3.5 rounded-full bg-[var(--turquoise)] text-white font-semibold text-sm hover:opacity-90 transition-all shadow-sm flex items-center justify-center gap-2 mb-3"
               >
                 <MessageCircle className="w-4 h-4" /> Enviar mensaje
               </button>
 
               <button
-                onClick={() => onNavigate('register')}
+                onClick={() => isLoggedIn ? toast('Presupuesto solicitado. El profesional te contactará pronto.', 'success') : onNavigate('register')}
                 className="w-full py-3 rounded-full border border-[var(--coral)] text-[var(--coral)] font-semibold text-sm hover:bg-[var(--coral)]/5 transition-all flex items-center justify-center gap-2"
               >
                 <Calendar className="w-4 h-4" /> Solicitar presupuesto
@@ -345,6 +429,13 @@ export default function ProfilePage({ proId, onBack, onNavigate }: Props) {
           </div>
         </div>
       </div>
+
+      {/* Chat modal (logged-in users) */}
+      <ChatModal
+        open={chatOpen}
+        onClose={() => setChatOpen(false)}
+        contact={{ id: pro.id, name: pro.name, avatar: pro.avatar }}
+      />
     </div>
   )
 }
